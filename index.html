@@ -798,6 +798,46 @@ fieldset.dq legend{font:800 16px var(--font-display);padding:0 8px;color:var(--r
 .panels:not(.solo) .pn-do .ide>div:last-child svg{max-height:26vh;width:100%}
 @media(max-width:720px){.panels:not(.solo) .pn-do .ide>div:last-child{position:static;max-height:none}.panels:not(.solo) .pn-do .ide>div:last-child #m6-mb{zoom:1}}
 
+/* ════════ Una pantalla por paso: Aprende · Practica · Comprueba ════════ */
+.panels{display:block}
+.panels>.pn-teach,.panels>.pn-do{display:none}
+.panels[data-tab=aprende]>.pn-teach:not(.pn-check){display:block}
+.panels[data-tab=practica]>.pn-do{display:block}
+.panels[data-tab=comprueba]>.pn-check{display:block}
+.stabs{display:flex;gap:8px;margin:14px 0 12px;flex-wrap:wrap}
+.stabs button{flex:1 1 150px;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 14px;border:2px solid var(--rbs-border);border-radius:var(--radius-lg);background:var(--rbs-white);font:800 16px var(--font-display);color:var(--rbs-gray-700);cursor:pointer}
+.stabs button i{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--rbs-gray-200);font-style:normal;font-size:14px;color:var(--rbs-carbon)}
+.stabs button.on{background:var(--c,var(--rbs-teal));border-color:var(--c,var(--rbs-teal));color:var(--rbs-white)}
+.stabs button.on i{background:rgba(255,255,255,.3);color:var(--rbs-white)}
+.stabs button.ok i{background:var(--rbs-success);color:var(--rbs-white);font-size:0}
+.stabs button.ok i::before{content:"✓";font-size:14px}
+.cpts{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:10px}
+.cpts .cpt{margin:0}
+.chk-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:20px;align-items:start}
+.tabnext{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.tabnext .btn:last-child{margin-left:auto}
+.hide-t{display:none!important}
+@media(min-width:981px){
+  .pn-do .grid2{grid-template-columns:1fr 1fr}
+  .pn-do .ide{grid-template-columns:200px 1fr 1fr}
+  .panels .pn-do .simgrid{display:grid}
+  .panels .pn-do .simgrid>.panel{margin-bottom:0}
+  .pn-do .simgrid>.panel:first-child [id$="-mb"]{zoom:1}
+  .pn-do .simgrid>.panel:first-child svg{max-height:none}
+  .panels .pn-do .ide{display:grid;gap:14px}
+  .panels .pn-do .ide>div:last-child{order:0;position:sticky;top:76px;max-height:none;overflow:visible;border:0;box-shadow:none;padding:0;background:none}
+  .panels .pn-do .ide>div:last-child #m6-mb{zoom:1}
+  .panels .pn-do .ide>div:last-child svg{max-height:none}
+}
+
+/* ════════ La práctica en actividades, una a la vez ════════ */
+.pn-do .act{display:none}.pn-do .act.on{display:block}
+.acts-bar{display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap;margin:0 0 12px;padding:8px 10px;background:var(--rbs-gray-100);border:1px solid var(--rbs-border);border-radius:var(--radius-lg);position:sticky;top:64px;z-index:6}
+.acts-t{font-size:14px;color:var(--rbs-gray-700)}
+.acts-d{display:flex;gap:6px;flex:1;justify-content:center;flex-wrap:wrap}
+.acts-d i{width:12px;height:12px;border-radius:50%;background:var(--rbs-gray-300);cursor:pointer}
+.acts-d i.on{background:var(--c,var(--rbs-teal));transform:scale(1.25)}
+
 /* ════════ Módulo de radio: bloques, laboratorio, retos ════════ */
 .rbk{display:grid;grid-template-columns:minmax(190px,1fr) minmax(200px,1.4fr);gap:12px 16px;align-items:start;border:2px solid var(--rbs-border);border-left:6px solid var(--rbs-pink);border-radius:var(--radius-lg);padding:12px 14px;margin:10px 0;background:var(--rbs-white)}
 .rbk small{display:block;font:800 11px var(--font-display);text-transform:uppercase;letter-spacing:.06em;color:var(--rbs-pink);margin-bottom:3px}
@@ -3654,47 +3694,55 @@ radio.on_received_string(on_received_string)`}
     const teach=document.createElement('article');teach.className='pn-teach';teach.id='teach-'+id;
     const doo=document.createElement('div');doo.className='pn-do';doo.innerHTML='<div class="pn-label">Practica</div>';
     rest.forEach(n=>doo.appendChild(n));
-    wrap.append(teach,doo);head.after(wrap);
+    const chk=document.createElement('article');chk.className='pn-teach pn-check';chk.id='check-'+id;
+    wrap.dataset.tab='aprende';
+    wrap.append(teach,doo,chk);
+    const tabs=document.createElement('div');tabs.className='stabs';tabs.id='tabs-'+id;tabs.setAttribute('role','tablist');
+    tabs.innerHTML='<button type="button" role="tab" data-t="aprende"><i>1</i> Aprende</button><button type="button" role="tab" data-t="practica"><i>2</i> Practica</button><button type="button" role="tab" data-t="comprueba"><i>3</i> Comprueba</button>';
+    head.after(tabs);tabs.after(wrap);
+    const tn=document.createElement('div');tn.className='tabnext';tn.innerHTML='<button type="button" class="btn sm sec" data-tab-go="aprende">← Volver a Aprende</button><button type="button" class="btn sm" data-tab-go="comprueba">Ir a comprobar →</button>';doo.appendChild(tn);
     const nx=document.createElement('div');nx.className='nextrow';nx.id='nx-'+id;s.appendChild(nx);
-    buildTeach(id,teach);
+    buildTeach(id,teach,chk);
   });
 
   /* ---------- panel Aprende ---------- */
-  function buildTeach(id,box){
+  function buildTeach(id,box,chk){
     const F=hasF(id)?FUND[id]:null;
-    if(!F){box.innerHTML='<div class="pn-label">Aprende</div><p>Los fundamentos de esta etapa están en preparación.</p>';return}
+    if(!F){box.innerHTML='<div class="pn-label">Aprende</div><p>Los fundamentos de esta etapa están en preparación.</p>';chk.innerHTML='';return}
     const st=fs(id);
     const cp=(F.conceptos||[]).map(c=>`<div class="cpt"><b class="t">${esc(c.t)}</b><p>${c.d}</p>${c.ej?`<p class="ej"><b>En tu robot:</b> ${c.ej}</p>`:''}${c.codigo?`<pre>${esc(c.codigo)}</pre>`:''}</div>`).join('');
     const pistas=((F.explica&&F.explica.pistas)||[]).map(p=>`<li>${p}</li>`).join('');
     box.innerHTML=`<div class="pn-label">Aprende primero<button type="button" class="hide-t" data-solo>Ocultar</button></div>
       <p class="keyidea"><b>Idea clave:</b> ${F.idea}</p>
-      <div class="step-h" id="sh1-${id}"><i>1</i>Conceptos que necesitas</div>${cp}
+      <div class="step-h" id="sh1-${id}"><i>1</i>Conceptos que necesitas</div><div class="cpts">${cp}</div>
       ${F.analogia?`<div class="ana"><b>Piénsalo así:</b> ${F.analogia}</div>`:''}
       ${F.error_comun?`<details><summary>Ojo con esta confusión</summary><p style="margin:8px 0 0">${F.error_comun}</p></details>`:''}
       ${F.guia?`<p><a class="pylink" href="guia-python-robotschool.html" target="_blank" rel="noopener">Practica en la guía de Python: ${esc(F.guia.tema)}</a><br><small>${F.guia.cuando||''}</small></p>`:''}
-      <div class="step-h" id="sh2-${id}"><i>2</i>Comprueba lo que entendiste</div><div id="fq-${id}"></div>
-      <div class="step-h" id="sh3-${id}"><i>3</i>Explícalo con tus palabras</div>
+      <div class="tabnext"><button type="button" class="btn sm" data-tab-go="practica">Ir a practicar →</button></div>`;
+    chk.innerHTML=`<div class="pn-label">Comprueba lo que aprendiste</div><div class="chk-grid"><div>
+      <div class="step-h" id="sh2-${id}"><i>1</i>Comprueba lo que entendiste</div><div id="fq-${id}"></div></div><div>
+      <div class="step-h" id="sh3-${id}"><i>2</i>Explícalo con tus palabras</div>
       <p style="margin:4px 0 0">${F.explica?F.explica.pregunta:''}</p>
       <details><summary>Ver pistas</summary><ul style="margin:8px 0 0;padding-left:18px">${pistas}</ul></details>
       <textarea id="ex-${id}" placeholder="Escribe aquí tu explicación (mínimo una frase completa)…" aria-label="Tu explicación">${esc(expl[id]||'')}</textarea>
       <label class="ck"><input type="checkbox" id="exc-${id}" ${st.e?'checked':''}><span>Se lo expliqué en voz alta a mi docente o a un compañero.</span></label>
       ${F.reto?`<div class="ana" style="background:var(--rbs-white);border:1px dashed var(--rbs-teal)"><b>Reto rápido:</b> ${F.reto}</div>
       <label class="nb"><b>Mi cuaderno</b> <small>(escribe aquí lo que pide el reto; se guarda solo en este navegador)</small><textarea id="nb-${id}" placeholder="Escribe aquí tus respuestas, dibujos descritos o notas…" aria-label="Mi cuaderno">${esc(nbk[id]||'')}</textarea></label>
-      <label class="ck"><input type="checkbox" id="rtc-${id}" ${st.r?'checked':''}><span>Hice el reto rápido.</span></label>`:''}
+      <label class="ck"><input type="checkbox" id="rtc-${id}" ${st.r?'checked':''}><span>Hice el reto rápido.</span></label>`:''}</div></div>
       <div class="tonly"><h4>Para el docente</h4>
         ${F.profe&&F.profe.length?`<p style="margin:0 0 4px"><b>Preguntas para hacer en voz alta:</b></p><ul>${F.profe.map(p=>`<li>${p}</li>`).join('')}</ul>`:''}
         ${F.error_comun?`<p style="margin:8px 0 0"><b>Confusión típica:</b> ${F.error_comun}</p>`:''}
         ${(F.dudas&&F.dudas.length)?`<p style="margin:8px 0 0"><b>Por verificar con el kit:</b> ${esc(Array.isArray(F.dudas)?F.dudas.join(' · '):F.dudas)}</p>`:''}</div>`;
-    const fq=$('#fq-'+id,box);
+    const fq=$('#fq-'+id,chk);
     const startQ=(practice)=>{fq.innerHTML='';mcq(fq,F.preguntas||[],()=>{if(practice)return;st.q=true;save(FK,fund);log('preguntas_ok',id);paintAll();beep(880,.1)})};
-    if(st.q){fq.innerHTML='<p class="say ok">Ya respondiste estas preguntas.</p><button type="button" class="btn sm sec" id="fqr-'+id+'">Repasarlas</button>';$('#fqr-'+id,box).onclick=()=>startQ(true)}
+    if(st.q){fq.innerHTML='<p class="say ok">Ya respondiste estas preguntas.</p><button type="button" class="btn sm sec" id="fqr-'+id+'">Repasarlas</button>';$('#fqr-'+id,chk).onclick=()=>startQ(true)}
     else startQ(false);
-    const ta=$('#ex-'+id,box),ck=$('#exc-'+id,box);
+    const ta=$('#ex-'+id,chk),ck=$('#exc-'+id,chk);
     const gate=()=>{const ok=ta.value.trim().length>=30;ck.disabled=!ok;if(!ok&&ck.checked){ck.checked=false;st.e=false;save(FK,fund)}};
     ta.oninput=()=>{expl[id]=ta.value;save(XK,expl);gate();paintAll()};
     ck.onchange=()=>{st.e=ck.checked;save(FK,fund);if(ck.checked){log('explicacion',id,(expl[id]||'').length+' caracteres');beep(660,.08)}paintAll()};
     gate();
-    const nb=$('#nb-'+id,box),rc=$('#rtc-'+id,box);
+    const nb=$('#nb-'+id,chk),rc=$('#rtc-'+id,chk);
     if(nb)nb.oninput=()=>{nbk[id]=nb.value;save(NK,nbk)};
     if(rc)rc.onchange=()=>{st.r=rc.checked;save(FK,fund);if(rc.checked){log('reto',id);beep(660,.08)}};
     $('[data-solo]',box).onclick=()=>{const p=box.parentElement;p.classList.add('solo');showSoloBtn(p)};
@@ -3716,6 +3764,8 @@ radio.on_received_string(on_received_string)`}
     ORDER.forEach((id,i)=>{const s=sec(id);if(!s)return;s.classList.toggle('okp',passed(id));
       const d=$('#dot-'+id);if(d){d.classList.toggle('okp',passed(id));d.classList.toggle('locked',!unlocked(i))}
       const F=hasF(id);const st=fs(id);
+      const tb=$('#tabs-'+id);if(tb){const a=tb.querySelector('[data-t=practica]'),c=tb.querySelector('[data-t=comprueba]');
+        if(a)a.classList.toggle('ok',done.has(id)||skipped(id)||teacher.passed.includes(id));if(c)c.classList.toggle('ok',!hasF(id)||!!(st.q&&st.e));}
       const q=$('#sh2-'+id),e=$('#sh3-'+id);if(q)q.classList.toggle('ok',!!st.q);if(e)e.classList.toggle('ok',!!st.e);
       const nx=$('#nx-'+id);if(!nx)return;const next=ORDER[i+1];const m=missing(id);
       nx.innerHTML=`<span class="hint">${id==='final'?'Último paso del módulo.':(m.length?'Para continuar falta: '+m.join(', ')+'.':(skipped(id)?'Omitida por el diagnóstico: ya la recordabas. Puedes repasarla cuando quieras.':'Etapa superada. Ya puedes seguir.'))}</span>${next?`<button type="button" class="btn" data-next="${next}" ${m.length&&!teacher.unlockAll?'disabled':''}>Continuar: ${esc(title(next))} →</button>`:''}`;
@@ -3727,11 +3777,21 @@ radio.on_received_string(on_received_string)`}
     paintTch()}
   const rp0=renderProgress;renderProgress=function(){rp0();try{paintAll()}catch(e){}};
 
+  /* ---------- pestañas por etapa ---------- */
+  const tabSel={};
+  function setTab(id,t){const s=sec(id);if(!s)return;const w=s.querySelector(':scope>.panels');if(!w)return;
+    tabSel[id]=t;w.dataset.tab=t;$$('#tabs-'+id+' button').forEach(b=>{const on=b.dataset.t===t;b.classList.toggle('on',on);b.setAttribute('aria-selected',on)})}
+  document.addEventListener('click',e=>{
+    const b=e.target.closest&&e.target.closest('[data-t],[data-tab-go]');if(!b)return;
+    const s=b.closest('.m');if(!s)return;setTab(s.id,b.dataset.t||b.dataset.tabGo);
+    const tb=$('#tabs-'+s.id);if(tb)window.scrollTo({top:tb.getBoundingClientRect().top+scrollY-84,behavior:'smooth'})});
+  ORDER.forEach(id=>setTab(id,'aprende'));
+
   /* ---------- navegar ---------- */
   function go(id,quiet){
     const i=ORDER.indexOf(id);if(i<0&&id!=='diag')return;
     if(i>=0&&!unlocked(i)){const need=ORDER[i-1];toast('Primero supera: '+title(need));return}
-    cur=id;save(CK,id);
+    cur=id;save(CK,id);if(i>=0)setTab(id,tabSel[id]||'aprende');
     ORDER.forEach(x=>{const s=sec(x);if(s)s.classList.toggle('cur',x===id)});
     const dsx=sec('diag');if(dsx)dsx.classList.toggle('cur',id==='diag');
     if(id==='diag')renderDiag();
@@ -3898,6 +3958,23 @@ radio.on_received_string(on_received_string)`}
   document.querySelectorAll('.pn-do .grid2').forEach(function(g){
     var f=g.firstElementChild;
     if(f&&f.classList.contains('panel')&&f.querySelector('svg,[id$="-mb"],[id$="-world"]'))g.classList.add('simgrid');
+  });
+  /* la práctica se divide en actividades: una a la vez, sin bajar */
+  document.querySelectorAll('.m .pn-do').forEach(function(pd){
+    var kids=[].slice.call(pd.children).filter(function(c){return !c.classList.contains('pn-label')&&!c.classList.contains('tabnext')});
+    var NEW='.panel,.grid2,.grid3,.ide,.vocab,.card,figure.art,.panels';
+    var units=[],curU=null;
+    kids.forEach(function(c){
+      if(c.matches(NEW)||!curU){curU=document.createElement('div');curU.className='act';units.push(curU);pd.insertBefore(curU,c)}
+      curU.appendChild(c)});
+    if(units.length<2){units.forEach(function(u){u.classList.add('on','solo1')});return}
+    var bar=document.createElement('div');bar.className='acts-bar';
+    var lab=pd.querySelector('.pn-label');(lab?lab.after.bind(lab):pd.prepend.bind(pd))(bar);
+    var idx=0;
+    function show(i){idx=Math.max(0,Math.min(units.length-1,i));units.forEach(function(u,k){u.classList.toggle('on',k===idx)});
+      bar.innerHTML='<button type="button" class="btn sm sec" data-a="-1"'+(idx===0?' disabled':'')+'>◀ Anterior</button><span class="acts-t">Actividad <b>'+(idx+1)+'</b> de '+units.length+'</span><span class="acts-d">'+units.map(function(_,k){return '<i class="'+(k===idx?'on':'')+'" data-i="'+k+'"></i>'}).join('')+'</span><button type="button" class="btn sm" data-a="1"'+(idx===units.length-1?' disabled':'')+'>Siguiente ▶</button>'}
+    bar.addEventListener('click',function(e){var b=e.target.closest('[data-a],[data-i]');if(!b)return;show(b.dataset.i!=null?+b.dataset.i:idx+(+b.dataset.a))});
+    show(0);pd._show=show;
   });
   /* aviso: esto se hace con el robot real, siguiendo el paso a paso */
   var AV={
