@@ -778,6 +778,9 @@ fieldset.dq legend{font:800 16px var(--font-display);padding:0 8px;color:var(--r
 .ovl-b input{border:2px solid var(--rbs-border);border-radius:var(--radius-md);padding:10px 12px;font-size:16px}
 .plist{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:8px 0}
 .tch .dtab{background:var(--rbs-white)}
+.lnk-st{border:0;background:transparent;font:700 14px var(--font-display);color:var(--rbs-teal-dark);text-decoration:underline;cursor:pointer;padding:0}
+#reg-det details summary{cursor:pointer;font-size:12px;color:var(--rbs-teal-dark)}
+#reg-det details p{margin:4px 0;font-size:13px;white-space:pre-wrap}
 </style>
 </head>
 <body>
@@ -3350,7 +3353,14 @@ const FUND={"m1": {"id": "m1", "idea": "Un robot no decide por sí solo: recibe 
     if(!L.length){box.innerHTML='<p class="note">Aún no hay estudiantes registrados en este navegador.</p>';return}
     box.innerHTML='<table class="dtab"><thead><tr><th>Estudiante</th><th>Grupo</th><th>Superadas</th><th>Omitidas</th><th>Diagnóstico</th></tr></thead><tbody>'+L.map(p=>{const d=profData(p);
       const sup=IDS.filter(id=>/^(Superada|Marcada|Omitida)/.test(estadoDe(d,id))).length;const om=(d.diag.skip||[]).length;
-      return `<tr><td>${esc(p.n)}</td><td>${esc(p.g)}</td><td>${sup}/${IDS.length}</td><td>${om}</td><td>${d.diag.estado==='hecho'?'Hecho':d.diag.estado==='omitido'?'Omitido (primera vez)':'Pendiente'}</td></tr>`}).join('')+'</tbody></table>'}
+      return `<tr><td><button type="button" class="lnk-st" data-rp="${esc(p.id)}">${esc(p.n)}</button></td><td>${esc(p.g)}</td><td>${sup}/${IDS.length}</td><td>${om}</td><td>${d.diag.estado==='hecho'?'Hecho':d.diag.estado==='omitido'?'Omitido (primera vez)':'Pendiente'}</td></tr>`}).join('')+'</tbody></table><p class="note">Toca el nombre de un estudiante para ver su avance etapa por etapa.</p><div id="reg-det"></div>';
+    $$('.lnk-st',box).forEach(b=>b.onclick=()=>drawDet(b.dataset.rp))}
+  function drawDet(pid){const p=PRF.list().find(x=>x.id===pid),box=$('#reg-det');if(!p||!box)return;const d=profData(p);
+    box.innerHTML=`<h4 style="margin:14px 0 6px">${esc(p.n)} · ${esc(p.g)}</h4><table class="dtab"><thead><tr><th>N</th><th>Etapa</th><th>Estado</th><th>Fecha</th><th>Diagnóstico</th></tr></thead><tbody>`+
+      IDS.map((id,i)=>{const f=d.fund[id]||{},r=d.diag.res&&d.diag.res[id],ex=d.expl[id],nb=d.nb[id];
+        const extra=(ex||nb)?`<details><summary>Ver lo que escribió</summary>${ex?'<p><b>Explicación:</b> '+esc(ex)+'</p>':''}${nb?'<p><b>Cuaderno:</b> '+esc(nb)+'</p>':''}</details>`:'';
+        return `<tr><td>${i+1}</td><td>${esc(title(id))}${extra}</td><td>${esc(estadoDe(d,id))}</td><td>${esc((d.st[id]&&d.st[id].t)||'')}</td><td>${r?r.ok+'/'+r.tot:''}</td></tr>`}).join('')+'</tbody></table>';
+    box.scrollIntoView({block:'nearest'})}
   const csvq=v=>'"'+String(v==null?'':v).replace(/"/g,'""').replace(/\r?\n/g,' ')+'"';
   function buildCsv(){
     const rows=[['Estudiante','Grupo','N','Etapa','Estado','Fecha','Diagnostico','Preguntas de comprension','Explicacion escrita','Explico en voz alta','Reto hecho','Cuaderno'].map(csvq).join(',')];
