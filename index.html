@@ -3584,7 +3584,7 @@ basic.forever(on_forever)`}
   const fundOk=id=>!hasF(id)||!!(fs(id).q&&fs(id).e);
   const skipped=id=>!!(diag.skip&&diag.skip.includes(id));
   const passed=id=>id==='final'?done.has('final'):!!(teacher.passed.includes(id)||skipped(id)||(done.has(id)&&fundOk(id)));
-  const unlocked=i=>teacher.unlockAll||i===0||passed(ORDER[i-1]);
+  const unlocked=i=>isT||teacher.unlockAll||i===0||passed(ORDER[i-1]);
   const sec=id=>document.getElementById(id);
   const title=id=>{const h=sec(id)&&sec(id).querySelector('.m-head h2');return h?h.textContent:id};
   const tagOf=id=>{const t=sec(id)&&sec(id).querySelector('.m-head .tag');return t?t.textContent.replace(/^[^\wÁÉÍÓÚÑáéíóúñ★]+/,'').trim():''};
@@ -3701,7 +3701,8 @@ basic.forever(on_forever)`}
   /* ---------- vista docente ---------- */
   const tb=$('#tch-btn'),pf=$('#tch-pin');
   function setT(v){isT=v;try{sessionStorage.setItem('rbs-mb-tch',v?'1':'0')}catch(e){}
-    document.body.classList.toggle('teacher',v);tb.setAttribute('aria-pressed',v);tb.textContent=v?'Salir de la vista docente':'Vista docente';paintTch()}
+    document.body.classList.toggle('teacher',v);tb.setAttribute('aria-pressed',v);tb.textContent=v?'Salir de la vista docente':'Vista docente';paintTch();paintAll();
+    if(!v&&cur&&!unlocked(ORDER.indexOf(cur)))go(ORDER.find((id,i)=>unlocked(i)&&!passed(id))||ORDER[0])}
   tb.onclick=()=>{if(isT){setT(false);return}pf.hidden=!pf.hidden;if(!pf.hidden)$('#tch-in').focus()};
   pf.onsubmit=e=>{e.preventDefault();const ok=$('#tch-in').value.trim()===PIN;$('#tch-say').textContent=ok?'':'Código incorrecto.';if(ok){pf.hidden=true;$('#tch-in').value='';setT(true)}};
   let resetArm=false;
