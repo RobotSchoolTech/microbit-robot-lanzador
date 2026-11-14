@@ -782,6 +782,22 @@ fieldset.dq legend{font:800 16px var(--font-display);padding:0 8px;color:var(--r
 #reg-det details summary{cursor:pointer;font-size:12px;color:var(--rbs-teal-dark)}
 #reg-det details p{margin:4px 0;font-size:13px;white-space:pre-wrap}
 
+/* ════════ La simulación se queda a la vista mientras se usan los controles (sin subir y bajar) ════════ */
+.m{overflow:clip}
+.pn-do .simgrid>.panel:first-child{position:sticky;top:76px;z-index:5;align-self:start;max-height:calc(100vh - 92px);overflow:auto;box-shadow:var(--shadow-md)}
+.pn-do .simgrid>.panel:first-child svg{max-height:32vh;width:100%}
+.pn-do .simgrid>.panel:first-child [id$="-mb"]{zoom:.62}
+.pn-do .simgrid>.panel:first-child .row{gap:6px;font-size:14px}
+.panels:not(.solo) .pn-do .simgrid{display:block}
+.panels:not(.solo) .pn-do .simgrid>.panel{margin-bottom:14px}
+@media(max-width:720px){.pn-do .simgrid>.panel:first-child{position:static;max-height:none;overflow:visible}.pn-do .simgrid>.panel:first-child [id$="-mb"]{zoom:1}}
+/* programar con bloques: el robot simulado queda arriba y fijo mientras se arman los bloques */
+.panels:not(.solo) .pn-do .ide{display:flex;flex-direction:column;gap:14px}
+.panels:not(.solo) .pn-do .ide>div:last-child{order:-1;position:sticky;top:76px;z-index:5;align-self:stretch;max-height:calc(100vh - 92px);overflow:auto;background:var(--rbs-white);border:1px solid var(--rbs-border);border-radius:var(--radius-lg);padding:8px;box-shadow:var(--shadow-md)}
+.panels:not(.solo) .pn-do .ide>div:last-child #m6-mb{zoom:.55}
+.panels:not(.solo) .pn-do .ide>div:last-child svg{max-height:26vh;width:100%}
+@media(max-width:720px){.panels:not(.solo) .pn-do .ide>div:last-child{position:static;max-height:none}.panels:not(.solo) .pn-do .ide>div:last-child #m6-mb{zoom:1}}
+
 /* ════════ Módulo de radio: bloques, laboratorio, retos ════════ */
 .rbk{display:grid;grid-template-columns:minmax(190px,1fr) minmax(200px,1.4fr);gap:12px 16px;align-items:start;border:2px solid var(--rbs-border);border-left:6px solid var(--rbs-pink);border-radius:var(--radius-lg);padding:12px 14px;margin:10px 0;background:var(--rbs-white)}
 .rbk small{display:block;font:800 11px var(--font-display);text-transform:uppercase;letter-spacing:.06em;color:var(--rbs-pink);margin-bottom:3px}
@@ -3848,6 +3864,7 @@ basic.forever(on_forever)`}
   if(!PRF.cur)profileOverlay(true);
 })();
 
+;(function(){document.querySelectorAll('.pn-do .grid2').forEach(function(g){var f=g.firstElementChild;if(f&&f.classList.contains('panel')&&f.querySelector('svg,[id$="-mb"],[id$="-world"]'))g.classList.add('simgrid')})})();
 </script>
 </body>
 </html>
